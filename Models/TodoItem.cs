@@ -1,0 +1,10 @@
+namespace TodoApp.Models
+{
+    public class TodoItem
+    {
+        public int Id { get; set; }
+        public string? Title { get; set; } // Made Title nullable to avoid the warning
+        public bool IsCompleted { get; set; }
+        public required string UserName {get;set;}
+    }
+}
