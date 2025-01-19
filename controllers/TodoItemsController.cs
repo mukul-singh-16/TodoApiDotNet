@@ -1,113 +1,173 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoApp.Database;
+using TodoApp.DTOs;
 using TodoApp.Models;
 
 namespace TodoApp.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TodoItemsController : ControllerBase
+    public class TodoController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        // Constructor to inject the ApplicationDbContext
-        public TodoItemsController(ApplicationDbContext context)
+        public TodoController(ApplicationDbContext context)
         {
-            _context = context;     
+            _context = context;
         }
 
-
-
-
-
-        // GET: api/TodoItems
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var todoItems = await _context.TodoItems.ToListAsync();
-            return Ok(todoItems); // Return list of all TodoItems
-        }
-
-
-
-
-        // GET: api/TodoItems/{id}
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            // Find the TodoItem by ID
-            var item = await _context.TodoItems.FindAsync(id);
-
-            if (item == null) 
-            {
-                return NotFound(); // Return 404 if item is not found
-            }
-
-            return Ok(item); // Return the found item
-        }
-
-
-
-
-        // POST: api/TodoItems
+        // Create Todo
         [HttpPost]
-        public async Task<IActionResult> Create(TodoItem todoItem)
+        public async Task<IActionResult> CreateTodo([FromBody] TodoRequest todoRequest)
         {
-            // Add the new TodoItem to the context and save changes
-            _context.TodoItems.Add(todoItem);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == todoRequest.Username);
+
+            if (user == null)
+            {
+                return NotFound(new { message = "User not found" });
+            }
+
+            var todo = new TodoItem
+            {
+                Title = todoRequest.Title,
+                IsCompleted = todoRequest.IsCompleted,
+                UserId = user.Id // Only set the UserId here
+            };
+
+            _context.TodoItems.Add(todo);
             await _context.SaveChangesAsync();
 
-            // Return 201 Created status with the location of the new TodoItem
-            return CreatedAtAction(nameof(Get), new { id = todoItem.Id }, todoItem);
+            var todoResponse = new TodoResponse
+            {
+                Id = todo.Id,
+                Title = todo.Title,
+                IsCompleted = todo.IsCompleted,
+                Username = user.Username
+            };
+
+            return CreatedAtAction(nameof(GetTodoById), new { id = todo.Id }, todoResponse);
         }
 
+        // Get All Todos
+        [HttpGet]
+        public async Task<IActionResult> GetAllTodos()
+        {
+            var todos = await _context.TodoItems.ToListAsync();
+            return Ok(todos);
+        }
 
+        // Get Todo by Id
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTodoById(int id)
+        {
+            var todo = await _context.TodoItems.FirstOrDefaultAsync(t => t.Id == id);
 
-        // PUT: api/TodoItems/{id}
+            if (todo == null)
+            {
+                return NotFound(new { message = "Todo not found" });
+            }
+
+            return Ok(todo);
+        }
+
+        // Get Todos by Username
+        [HttpGet("user/{username}")]
+        public async Task<IActionResult> GetTodosByUsername(string username)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+
+            if (user == null)
+            {
+                return NotFound(new { message = "User not found" });
+            }
+
+            var todos = await _context.TodoItems
+                .Where(t => t.UserId == user.Id)
+                .ToListAsync();
+
+            return Ok(todos);
+        }
+
+        // Update Todo
         [HttpPut("{id}")]
-        public IActionResult UpdateTodoItem(int id, [FromBody] TodoItem updatedTodo)
+        public async Task<IActionResult> UpdateTodo(int id, [FromBody] TodoRequest todoRequest)
         {
-            // Find the existing TodoItem by ID
-            var existingTodo = _context.TodoItems.FirstOrDefault(t => t.Id == id);
+            var todo = await _context.TodoItems.FindAsync(id);
 
-            if (existingTodo == null)
+            if (todo == null)
             {
-                return NotFound(); // Return 404 if item not found
+                return NotFound(new { message = "Todo not found" });
             }
 
-            // Update the fields of the existing TodoItem
-            existingTodo.Title = updatedTodo.Title;
-            existingTodo.IsCompleted = updatedTodo.IsCompleted;
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == todoRequest.Username);
 
-            // Save the changes to the database
-            _context.SaveChanges();
-
-            // Return 204 No Content to indicate successful update
-            return NoContent();
-        }
-
-
-        
-
-        // DELETE: api/TodoItems/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            // Find the TodoItem by ID
-            var item = await _context.TodoItems.FindAsync(id);
-
-            if (item == null) 
+            if (user == null)
             {
-                return NotFound(); // Return 404 if item not found
+                return NotFound(new { message = "User not found" });
             }
 
-            // Remove the TodoItem from the context and save changes
-            _context.TodoItems.Remove(item);
+            todo.Title = todoRequest.Title;
+            todo.IsCompleted = todoRequest.IsCompleted;
+            todo.UserId = user.Id; // Only update UserId here
+
+            _context.TodoItems.Update(todo);
             await _context.SaveChangesAsync();
 
-            // Return 204 No Content indicating successful deletion
-            return NoContent();
+            return Ok(todo);
+        }
+
+        // Delete Todo
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTodoById(int id)
+        {
+            var todo = await _context.TodoItems.FindAsync(id);
+
+            if (todo == null)
+            {
+                return NotFound(new { message = "Todo not found" });
+            }
+
+            _context.TodoItems.Remove(todo);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Todo deleted successfully" });
+        }
+
+        // Get Incomplete Todos by Username
+        [HttpGet("user/{username}/incomplete")]
+        public async Task<IActionResult> GetIncompleteTodos(string username)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+
+            if (user == null)
+            {
+                return NotFound(new { message = "User not found" });
+            }
+
+            var incompleteTodos = await _context.TodoItems
+                .Where(t => t.UserId == user.Id && !t.IsCompleted)
+                .ToListAsync();
+
+            return Ok(incompleteTodos);
+        }
+
+        // Get Completed Todos by Username
+        [HttpGet("user/{username}/completed")]
+        public async Task<IActionResult> GetCompletedTodos(string username)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+
+            if (user == null)
+            {
+                return NotFound(new { message = "User not found" });
+            }
+
+            var completedTodos = await _context.TodoItems
+                .Where(t => t.UserId == user.Id && t.IsCompleted)
+                .ToListAsync();
+
+            return Ok(completedTodos);
         }
     }
 }

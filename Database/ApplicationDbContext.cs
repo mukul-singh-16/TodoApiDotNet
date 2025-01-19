@@ -9,8 +9,17 @@ namespace TodoApp.Database
             Console.WriteLine("application db context constructor");
         }
 
+        public DbSet<User> Users { get; set; }
         public DbSet<TodoItem> TodoItems { get; set; }
 
-        public DbSet<User> Users { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<TodoItem>()
+                .HasOne<User>()
+                .WithMany(u => u.Todos)
+                .HasForeignKey(t => t.UserId);  // Foreign key setup
+        }
     }
 }

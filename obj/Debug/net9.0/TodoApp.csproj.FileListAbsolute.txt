@@ -122,3 +122,4 @@ D:\dotnet\TodoApp\obj\Debug\net9.0\refint\TodoApp.dll
 D:\dotnet\TodoApp\obj\Debug\net9.0\TodoApp.pdb
 D:\dotnet\TodoApp\obj\Debug\net9.0\TodoApp.genruntimeconfig.cache
 D:\dotnet\TodoApp\obj\Debug\net9.0\ref\TodoApp.dll
+D:\dotnet\TodoApp\obj\Debug\net9.0\TodoApp.sourcelink.json
