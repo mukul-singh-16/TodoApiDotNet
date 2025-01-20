@@ -1,0 +1,7 @@
+@TodoApp_HostAddress = http://localhost:5256
+
+GET {{TodoApp_HostAddress}}/api/TodoItems
+
+Accept: application/json
+
+###
