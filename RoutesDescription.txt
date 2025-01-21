@@ -1,0 +1,248 @@
+# Summary of Routes by Controller
+
+## UsersController
+
+**1. Get All Users**  
+**GET** `/api/users`  
+Returns all users in the database.  
+
+**Example Response:**  
+```json
+[
+  {
+    "id": 1,
+    "username": "john_doe",
+    "todos": []
+  },
+  {
+    "id": 2,
+    "username": "jane_doe",
+    "todos": []
+  }
+]
+```
+
+---
+
+**2. Add a New User**  
+**POST** `/api/users`  
+Adds a new user to the database.  
+
+**Request Body:**  
+```json
+{
+  "username": "john_doe"
+}
+```
+
+**Example Response:**  
+```json
+{
+  "id": 1,
+  "username": "john_doe"
+}
+```
+
+---
+
+**3. Get User by Username**  
+**GET** `/api/users/find/{username}`  
+Finds a user by their username.  
+
+**Example Response:**  
+```json
+{
+  "id": 1,
+  "username": "john_doe",
+  "todos": []
+}
+```
+
+---
+
+**4. Update Username**  
+**PUT** `/api/users/update/{currentUsername}`  
+Updates a user's username.  
+
+**Request Body:**  
+```json
+"new_username"
+```
+
+**Example Response:**  
+```json
+{
+  "message": "Username updated successfully",
+  "user": {
+    "id": 1,
+    "username": "new_username"
+  }
+}
+```
+
+---
+
+**5. Delete User**  
+**DELETE** `/api/users/delete/{username}`  
+Deletes a user by their username.  
+
+**Example Response:**  
+```json
+{
+  "message": "User deleted successfully"
+}
+```
+
+---
+
+## TodoController
+
+**1. Create a New Todo**  
+**POST** `/api/todo`  
+Creates a new todo for a user.  
+
+**Request Body:**  
+```json
+{
+  "title": "Buy groceries",
+  "isCompleted": false,
+  "username": "john_doe"
+}
+```
+
+**Example Response:**  
+```json
+{
+  "id": 1,
+  "title": "Buy groceries",
+  "isCompleted": false,
+  "userId": 1
+}
+```
+
+---
+
+**2. Get All Todos**  
+**GET** `/api/todo`  
+Returns all todos in the database.  
+
+**Example Response:**  
+```json
+[
+  {
+    "id": 1,
+    "title": "Buy groceries",
+    "isCompleted": false,
+    "userId": 1
+  }
+]
+```
+
+---
+
+**3. Get Todo by ID**  
+**GET** `/api/todo/{id}`  
+Finds a todo by its ID.  
+
+**Example Response:**  
+```json
+{
+  "id": 1,
+  "title": "Buy groceries",
+  "isCompleted": false,
+  "userId": 1
+}
+```
+
+---
+
+**4. Get All Todos for a User**  
+**GET** `/api/todo/user/{username}`  
+Returns all todos for a specific user.  
+
+**Example Response:**  
+```json
+[
+  {
+    "id": 1,
+    "title": "Buy groceries",
+    "isCompleted": false,
+    "userId": 1
+  }
+]
+```
+
+---
+
+**5. Update a Todo**  
+**PUT** `/api/todo/{id}`  
+Updates a todo's details.  
+
+**Request Body:**  
+```json
+{
+  "title": "Buy fruits",
+  "isCompleted": true,
+  "username": "john_doe"
+}
+```
+
+**Example Response:**  
+```json
+{
+  "id": 1,
+  "title": "Buy fruits",
+  "isCompleted": true,
+  "userId": 1
+}
+```
+
+---
+
+**6. Delete a Todo**  
+**DELETE** `/api/todo/{id}`  
+Deletes a todo by its ID.  
+
+**Example Response:**  
+```json
+{
+  "message": "Todo deleted successfully"
+}
+```
+
+---
+
+**7. Get Incomplete Todos for a User**  
+**GET** `/api/todo/user/{username}/incomplete`  
+Returns all incomplete todos for a specific user.  
+
+**Example Response:**  
+```json
+[
+  {
+    "id": 1,
+    "title": "Buy groceries",
+    "isCompleted": false,
+    "userId": 1
+  }
+]
+```
+
+---
+
+**8. Get Completed Todos for a User**  
+**GET** `/api/todo/user/{username}/completed`  
+Returns all completed todos for a specific user.  
+
+**Example Response:**  
+```json
+[
+  {
+    "id": 2,
+    "title": "Buy fruits",
+    "isCompleted": true,
+    "userId": 1
+  }
+]
+```
+
