@@ -123,6 +123,7 @@ D:\dotnet\TodoApp\obj\Debug\net9.0\TodoApp.pdb
 D:\dotnet\TodoApp\obj\Debug\net9.0\TodoApp.genruntimeconfig.cache
 D:\dotnet\TodoApp\obj\Debug\net9.0\ref\TodoApp.dll
 D:\dotnet\TodoApp\obj\Debug\net9.0\TodoApp.sourcelink.json
+<<<<<<< HEAD
 D:\CrudInDotNet\TodoApiDotNet-Main\TodoApiDotNet-Main\bin\Debug\net9.0\appsettings.Development.json
 D:\CrudInDotNet\TodoApiDotNet-Main\TodoApiDotNet-Main\bin\Debug\net9.0\appsettings.json
 D:\CrudInDotNet\TodoApiDotNet-Main\TodoApiDotNet-Main\bin\Debug\net9.0\TodoApp.staticwebassets.endpoints.json
@@ -247,3 +248,6 @@ D:\CrudInDotNet\TodoApiDotNet-Main\TodoApiDotNet-Main\obj\Debug\net9.0\refint\To
 D:\CrudInDotNet\TodoApiDotNet-Main\TodoApiDotNet-Main\obj\Debug\net9.0\TodoApp.pdb
 D:\CrudInDotNet\TodoApiDotNet-Main\TodoApiDotNet-Main\obj\Debug\net9.0\TodoApp.genruntimeconfig.cache
 D:\CrudInDotNet\TodoApiDotNet-Main\TodoApiDotNet-Main\obj\Debug\net9.0\ref\TodoApp.dll
+=======
+>>>>>>> 3358de2496b3dbfc106b3d5bd41d95488e123a7f
+D:\CrudInDotNet\TodoApiDotNet-Main\TodoApiDotNet-Main\obj\Debug\net9.0\TodoApp.sourcelink.json
