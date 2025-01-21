@@ -19,7 +19,7 @@ namespace TodoApp.Database
             modelBuilder.Entity<TodoItem>()
                 .HasOne<User>()
                 .WithMany(u => u.Todos)
-                .HasForeignKey(t => t.UserId);  // Foreign key setup
+                .HasForeignKey(t => t.UserId);  
         }
     }
 }
